@@ -1,0 +1,10 @@
+# OpenAI API Configuration
+# Copy this file to .env and add your actual API key
+
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Instructions:
+# 1. Get your API key from: https://platform.openai.com/api-keys
+# 2. Replace 'your_openai_api_key_here' with your actual key
+# 3. Save this file as '.env' (without the .template extension)
+# 4. Never share your .env file or commit it to version control
