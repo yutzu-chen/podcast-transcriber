@@ -1368,47 +1368,9 @@ class WordDefinitionPanel(QFrame):
         self.phonetic.setText(f"/{word.lower()}/")
         
         # Provide some basic German word information
-        german_words = {
-            'leute': 'people, folks',
-            'hallo': 'hello, hi',
-            'podcast': 'podcast',
-            'mein': 'my, mine',
-            'das': 'the, that',
-            'ist': 'is',
-            'und': 'and',
-            'zu': 'to, at',
-            'nächsten': 'next',
-            'mal': 'time, once',
-            'bis': 'until, by',
-            'zum': 'to the',
-            'wissen': 'to know',
-            'wissenschaftlich': 'scientific, academic',
-            'sprache': 'language, speech',
-            'deutsch': 'German',
-            'deutsche': 'German (feminine)',
-            'sprechen': 'to speak, to talk',
-            'liebe': 'love, dear',
-            'heute': 'today',
-            'möchte': 'would like to',
-            'ich': 'I',
-            'du': 'you (informal)',
-            'sie': 'she, they, you (formal)',
-            'er': 'he',
-            'es': 'it',
-            'wir': 'we',
-            'ihr': 'you (plural)',
-            'haben': 'to have',
-            'sein': 'to be',
-            'werden': 'to become, will',
-            'können': 'can, to be able to',
-            'müssen': 'must, to have to',
-            'sollen': 'should, ought to',
-            'wollen': 'to want',
-            'mögen': 'to like',
-            'dürfen': 'may, to be allowed to'
-        }
-        
-        word_lower = word.lower()
+        # Fallback display when no API data is available
+        self.adj_def1.setText(f"Word: {word}")
+        self.adj_def2.setText("(No definition available)")
         if word_lower in german_words:
             self.adj_def1.setText(f"German: {german_words[word_lower]}")
             self.adj_def2.setText("(Basic German translation)")
