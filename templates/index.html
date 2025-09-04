@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Transcriber</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="app-title">Podcast Transcriber</h1>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Ready to listen</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-grid">
+                <!-- Left Panel - Transcription -->
+                <div class="transcription-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Read along</h2>
+                    </div>
+                    
+                    <div class="transcription-container">
+                        <div class="transcription-text" id="transcriptionText">
+                            <div class="welcome-message">
+                                <p>Click the play button to start transcribing your speech.</p>
+                                <p>New sentences will appear in white, older ones will fade to black.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="play-button" id="playButton">
+                            <span class="play-icon">▶</span>
+                        </button>
+                        <span class="ready-text">Ready to listen</span>
+                    </div>
+                </div>
+
+                <!-- Right Panel - Dictionary -->
+                <div class="dictionary-panel">
+                    <div class="panel-header">
+                        <h2 class="panel-title">Wissenschaftlich</h2>
+                    </div>
+                    
+                    <div class="dictionary-content" id="dictionaryContent">
+                        <div class="tip-message">
+                            <p>Click on a word to look up its meaning</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
