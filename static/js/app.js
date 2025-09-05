@@ -18,8 +18,6 @@ class PodcastTranscriber {
   initializeElements() {
     this.playButton = document.getElementById("playButton");
     this.playIcon = this.playButton.querySelector(".play-icon");
-    this.statusIndicator = document.getElementById("statusIndicator");
-    this.statusText = this.statusIndicator.querySelector(".status-text");
     this.transcriptionText = document.getElementById("transcriptionText");
     this.dictionaryContent = document.getElementById("dictionaryContent");
     this.loadingOverlay = document.getElementById("loadingOverlay");
@@ -297,15 +295,9 @@ class PodcastTranscriber {
     if (this.isRecording) {
       this.playButton.classList.add("recording");
       this.playIcon.textContent = "⏹";
-      this.statusText.textContent = "Listening...";
-      this.statusIndicator.querySelector(".status-dot").style.backgroundColor =
-        "#FF4444";
     } else {
       this.playButton.classList.remove("recording");
       this.playIcon.textContent = "▶";
-      this.statusText.textContent = "Ready to listen";
-      this.statusIndicator.querySelector(".status-dot").style.backgroundColor =
-        "#4CAF50";
     }
   }
 

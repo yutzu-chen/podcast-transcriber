@@ -64,15 +64,21 @@ def process_audio_transcriptions():
                         audio_data = audio_queue.get(timeout=1.0)
                         
                         if audio_data['type'] == 'audio_chunk':
+                            print(f"Processing audio chunk for session {session_id}")
                             # Transcribe the audio
                             result = transcription_service.transcribe_audio_data(
                                 audio_data['data'],
                                 audio_data['sample_rate']
                             )
                             
+                            print(f"Transcription result: {result}")
+                            
                             if result['success'] and result['text'].strip():
+                                print(f"Got transcription text: {result['text']}")
                                 # Process the transcription
                                 processed = transcription_service.process_transcription(result['text'])
+                                
+                                print(f"Processed transcription: {processed}")
                                 
                                 if processed['success']:
                                     # Send complete sentences to the session
@@ -83,11 +89,15 @@ def process_audio_transcriptions():
                                                 'timestamp': datetime.now().isoformat(),
                                                 'complete': True
                                             })
+                                            print(f"Added complete sentence: {sentence}")
                                     
                                     # Update current sentence if it exists
                                     if processed['current_sentence']:
                                         if session_id in active_sessions:
                                             active_sessions[session_id]['current_sentence'] = processed['current_sentence']
+                                            print(f"Updated current sentence: {processed['current_sentence']}")
+                            else:
+                                print(f"Transcription failed or empty: {result}")
                         
                         audio_queue.task_done()
                         
