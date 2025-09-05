@@ -52,6 +52,17 @@ def index():
     """Serve the main application page"""
     return render_template('index.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon"""
+    return app.send_static_file('favicon.ico')
+
+@app.route('/apple-touch-icon.png')
+@app.route('/apple-touch-icon-precomposed.png')
+def apple_touch_icon():
+    """Serve apple touch icon"""
+    return app.send_static_file('favicon.ico')
+
 @app.route('/api/start-recording', methods=['POST'])
 def start_recording():
     """Start audio recording session"""
