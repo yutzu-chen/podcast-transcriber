@@ -25,6 +25,7 @@ from werkzeug.utils import secure_filename
 from services.audio_service import AudioService
 from services.dictionary_service import DictionaryService
 from services.transcription_service import TranscriptionService
+from services.background_service import BackgroundService
 
 app = Flask(__name__)
 CORS(app)
@@ -43,9 +44,69 @@ os.makedirs(app.config['TEMP_FOLDER'], exist_ok=True)
 audio_service = AudioService()
 dictionary_service = DictionaryService()
 transcription_service = TranscriptionService()
+background_service = BackgroundService(audio_service, transcription_service)
 
 # Global state for active sessions
 active_sessions: Dict[str, Dict[str, Any]] = {}
+
+# Background processing thread
+def process_audio_transcriptions():
+    """Background thread to process audio and generate transcriptions"""
+    while True:
+        try:
+            # Check all active sessions for audio data
+            for session_id in list(active_sessions.keys()):
+                if session_id in audio_service.audio_queues:
+                    audio_queue = audio_service.audio_queues[session_id]
+                    
+                    try:
+                        # Get audio data from queue (with timeout)
+                        audio_data = audio_queue.get(timeout=1.0)
+                        
+                        if audio_data['type'] == 'audio_chunk':
+                            # Transcribe the audio
+                            result = transcription_service.transcribe_audio_data(
+                                audio_data['data'],
+                                audio_data['sample_rate']
+                            )
+                            
+                            if result['success'] and result['text'].strip():
+                                # Process the transcription
+                                processed = transcription_service.process_transcription(result['text'])
+                                
+                                if processed['success']:
+                                    # Send complete sentences to the session
+                                    for sentence in processed['complete_sentences']:
+                                        if session_id in active_sessions:
+                                            active_sessions[session_id]['transcriptions'].append({
+                                                'text': sentence,
+                                                'timestamp': datetime.now().isoformat(),
+                                                'complete': True
+                                            })
+                                    
+                                    # Update current sentence if it exists
+                                    if processed['current_sentence']:
+                                        if session_id in active_sessions:
+                                            active_sessions[session_id]['current_sentence'] = processed['current_sentence']
+                        
+                        audio_queue.task_done()
+                        
+                    except queue.Empty:
+                        # No audio data available, continue
+                        continue
+                    except Exception as e:
+                        print(f"Error processing audio for session {session_id}: {e}")
+                        break
+            
+            time.sleep(0.1)  # Small delay to prevent busy waiting
+            
+        except Exception as e:
+            print(f"Error in transcription processing loop: {e}")
+            time.sleep(1)
+
+# Start background processing thread
+transcription_thread = threading.Thread(target=process_audio_transcriptions, daemon=True)
+transcription_thread.start()
 
 @app.route('/')
 def index():

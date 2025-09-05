@@ -104,6 +104,18 @@ class BackgroundService:
         # This method would be called by the Flask app to update sessions
         # For now, we'll just print the result
         print(f"Session {session_id}: {'Complete' if complete else 'Current'} - {text}")
+        
+        # TODO: This should be connected to the Flask app's active_sessions
+        # For now, we'll store it in a way that the Flask app can access
+        if not hasattr(self, 'transcription_queue'):
+            self.transcription_queue = queue.Queue()
+        
+        self.transcription_queue.put({
+            'session_id': session_id,
+            'text': text,
+            'complete': complete,
+            'timestamp': time.time()
+        })
     
     def stop(self):
         """Stop the background service"""
